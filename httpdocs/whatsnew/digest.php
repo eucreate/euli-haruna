@@ -16,54 +16,35 @@ EOT;
 // 取り出す最大レコード数
 $lim = 20;
 
-if (! isset($_GET["start"])) {
-	// はじめて呼び出されたとき
-	// 総レコード数を取得
-	// データ数の取得
-	$sql_rows = "SELECT COUNT(*) AS cnt FROM whatsnew;";
-	$res = $mysql->query($sql_rows);
-	$row = $mysql->fetch($res);
-	$dtcnt = $row["cnt"];
-	//mysql_free_result($res);
-	// 総ページ数を計算
-	$pgmax = ceil($dtcnt / $lim);
-	// 初期表示時の開始レコードを設定
-	$start = 0;
+// 総レコード数を取得
+// データ数の取得
+$sql_rows = "SELECT COUNT(*) AS cnt FROM whatsnew;";
+$res = $mysql->query($sql_rows);
+$row = $mysql->fetch($res);
+$dtcnt = $row["cnt"];
+
+// 総ページ数を計算
+$pgmax = ceil($dtcnt / $lim);
+
+if (isset($_GET['page']) && preg_match('/^[1-9][0-9]*$/', $_GET['page'])) {
+	$page = (int)$_GET['page'];
 } else {
-	// ページ移動用リンクから呼び出されたとき
-	$pgmax = $_GET[pgmax];
-	$start = $_GET[start];
+	$page = 1;
 }
 
-// 現在のページ番号を計算
-$curpage = ($start / $lim) + 1;
+//オフセットを計算
+$offset = $lim * ($page - 1);
+
+// 現在表示している何件中の何件からを取得
+$from = $offset + 1;
+$to = ($offset + $lim) < $dtcnt ? ($offset + $lim) : $dtcnt;
 
 // $startレコード目から$lim件のレコードを読み込むSQL
-$sql = "SELECT * FROM whatsnew ORDER BY wn_id DESC LIMIT $start, $lim";
-echo $dtcnt . " 件見つかりました。現在 " . $curpage . " ページ目を表示。";
+$sql = "SELECT * FROM whatsnew ORDER BY wn_id DESC LIMIT $offset, $lim";
+echo $dtcnt . " 件見つかりました。現在 " . $page . " ページ目（" . $from . "～" . $to . "件）を表示。";
 // 結果セットを取得
 $rst = $mysql->query($sql);
 
-/*
-// 表示するページ位置を取得する
-$p = intval(@$_GET["p"]);
-if ($p < 1) {
-	$p = 1;
-}
-
-// 表示するデータの位置を取得する
-$st = ($p - 1) * $lim;
-
-// 前のページ・次のページのページ番号を取得する
-$prev = $p - 1;
-if ($prev < 1) {
-	$prev = 1;
-}
-$next = $p + 1;
-
-// テーブル読み込み
-$my_Row = mysql_query("SELECT * FROM whatsnew ORDER BY wn_id DESC LIMIT $st, $lim",$my_Con) or die("データ抽出エラー");
-*/
 echo "<dl>\n";
 while($row = $mysql->fetch($rst)) {
 	if ($row["wn_text"] == "" && $row["wn_url"] != "") {
@@ -76,50 +57,49 @@ while($row = $mysql->fetch($rst)) {
 }
 echo "</dl>\n";
 
-/*
-// 前のページ・次のページへのリンク
-if ($p > 1) {
-	echo "<a href=\"".$_SERVER["PHP_SELF"]."?p=$prev\">前のページ</a> ";
-}
-if (($next - 1) * $lim < $dtcnt) {
-	echo "<a href=\"".$_SERVER["PHP_SELF"]."?p=$next\">次のページ</a>";
-}
-
-*/
 // 接続を解除
 $dbc = mysqli_connect(db_server,db_user,db_pass);
 mysqli_close($dbc);
 // ページ移動用リンクの組み立て
 // 先頭ページへの移動用
-$startprm = 0;
 echo "<p>";
-echo "<a href=\"".$_SERVER['PHP_SELF']."?pgmax=$pgmax&start=$startprm\">先頭</a>&nbsp;";
+if ($page === 1) {
+	echo '<span>先頭</span>&nbsp';
+} else {
+	echo "<a href=\"".$_SERVER['PHP_SELF']."?page=1\">先頭</a>&nbsp;";
+}
 
 // 一つ前のページへの移動用
-if ($curpage > 1) {
-	$startprm = ($curpage - 2) * $lim;
+if ($page === 1) {
+	echo "<span>前のページ</span>&nbsp;";
 } else {
-	$startprm = ($curpage - 1) * $lim;
+	$prev = $page - 1;
+	echo "<a href=\"".$_SERVER['PHP_SELF']."?page=$prev\">前のページ</a>&nbsp;";
 }
-echo "<a href=\"".$_SERVER['PHP_SELF']."?pgmax=$pgmax&start=$startprm\">前のページ</a>&nbsp;";
 
 // 各ページ番号への直リンク
-for ($cnt = 1; $cnt <= $pgmax; $cnt++) {
-	$startprm = ($cnt - 1) * $lim;
-	echo "<a href=\"".$_SERVER['PHP_SELF']."?pgmax=$pgmax&start=$startprm\">$cnt</a>&nbsp;";
+for ($i = 1; $i <= $pgmax; $i++) {
+	if ($page == $i) {
+		echo "<span>$i</span>&nbsp;";
+	} else {
+		echo "<a href=\"".$_SERVER['PHP_SELF']."?page=$i\">$i</a>&nbsp;";
+	}
 }
 
 // 1つ次のページへの移動用
-if ($curpage < $pgmax) {
-	$startprm = $curpage * $lim;
+if ($page == $pgmax) {
+	echo "<span>次のページ</span>&nbsp;";
 } else {
-	$startprm = ($curpage - 1) * $lim;
+	$next = $page + 1;
+	echo "<a href=\"".$_SERVER['PHP_SELF']."?page=$next\">次のページ</a>&nbsp;";
 }
-echo "<a href=\"".$_SERVER['PHP_SELF']."?pgmax=$pgmax&start=$startprm\">次のページ</a>&nbsp;";
 
 // 最終ページへのリンク
-$startprm = ($pgmax - 1) * $lim;
-echo "<a href=\"{$_SERVER['PHP_SELF']}?pgmax=$pgmax&start=$startprm\">最後</a>";
+if ($page == $pgmax) {
+	echo "<span>最後</span>";
+} else {
+	echo "<a href=\"{$_SERVER['PHP_SELF']}?page=$pgmax\">最後</a>";
+}
 echo "</p>";
 mysql_disconnect($mysql);
 ?>
