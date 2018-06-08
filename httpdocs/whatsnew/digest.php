@@ -1,7 +1,7 @@
 ﻿<?php
 require_once(dirname(__FILE__) . "/../config.php");
-require_once(dirname(__FILE__) . "/../include_app/mysql.php");
-$mysql = new MySQL;
+require_once(dirname(__FILE__) . "/../include_app/database.php");
+$dbc = new dbc();
 $page_title = "更新履歴";
 $customHead = "<link rel=\"stylesheet\" href=\"/css/layout.css\" type=\"text/css\" media=\"screen,print\">\n";
 include_once(dirname(__FILE__) . "/../include_files/header.php");
@@ -18,10 +18,8 @@ $lim = 20;
 
 // 総レコード数を取得
 // データ数の取得
-$sql_rows = "SELECT COUNT(*) AS cnt FROM whatsnew;";
-$res = $mysql->query($sql_rows);
-$row = $mysql->fetch($res);
-$dtcnt = $row["cnt"];
+$sql_rows = "SELECT COUNT(*) FROM whatsnew;";
+$dtcnt = $dbc->getRowSelectOnce($sql_rows);
 
 // 総ページ数を計算
 $pgmax = ceil($dtcnt / $lim);
@@ -40,13 +38,14 @@ $from = $offset + 1;
 $to = ($offset + $lim) < $dtcnt ? ($offset + $lim) : $dtcnt;
 
 // $startレコード目から$lim件のレコードを読み込むSQL
-$sql = "SELECT * FROM whatsnew ORDER BY wn_id DESC LIMIT $offset, $lim";
+$sql = "SELECT * FROM whatsnew ORDER BY wn_id DESC LIMIT ?, ?";
+$getPagesParam = array($offset, $lim);
 echo $dtcnt . " 件見つかりました。現在 " . $page . " ページ目（" . $from . "～" . $to . "件）を表示。";
 // 結果セットを取得
-$rst = $mysql->query($sql);
+$rst = $dbc->getRow($sql, $getPagesParam);
 
 echo "<dl>\n";
-while($row = $mysql->fetch($rst)) {
+foreach ($rst as $row) {
 	if ($row["wn_text"] == "" && $row["wn_url"] != "") {
 		$wn_link_url = $row["wn_url"];
 	} else {
@@ -57,9 +56,6 @@ while($row = $mysql->fetch($rst)) {
 }
 echo "</dl>\n";
 
-// 接続を解除
-$dbc = mysqli_connect(db_server,db_user,db_pass);
-mysqli_close($dbc);
 // ページ移動用リンクの組み立て
 // 先頭ページへの移動用
 echo "<p>";
@@ -101,7 +97,8 @@ if ($page == $pgmax) {
 	echo "<a href=\"{$_SERVER['PHP_SELF']}?page=$pgmax\">最後</a>";
 }
 echo "</p>";
-mysql_disconnect($mysql);
+//接続を解除
+$dbc->Disconnect();
 ?>
 </div><!-- /update -->
 			<!-- /#whatsnew --></div>
