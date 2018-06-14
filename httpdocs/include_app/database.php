@@ -45,7 +45,8 @@ class dbc {
 	//---------------------------
 	function getRowOnce($query) {
 		try {
-			return $this->cCon->query($query);
+			$stmt = $this->cCon->query($query);
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			throw new Exception($e->getMessage());
 		}
