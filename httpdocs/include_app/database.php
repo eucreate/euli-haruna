@@ -81,7 +81,7 @@ class dbc {
 		try {
 			$stmt = $this->cCon->prepare($query);
 			$stmt->execute($params);
-			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+			return $stmt->fetchColumn();
 		} catch(PDOException $e) {
 			throw new Exception($e->getMessage());
 		}
