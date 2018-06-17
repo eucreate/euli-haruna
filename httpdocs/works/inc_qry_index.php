@@ -1,6 +1,20 @@
 <?php
 if (! isset($_GET['works_id'])) {
-	$sql = "SELECT * FROM works WHERE works_open_flag = ? ORDER BY works_id DESC";
+	$dateGet = "SELECT DISTINCT DATE_FORMAT(works_regist_date,'%Y') as year FROM works WHERE works_open_flag = 1";
+	$getYear = $dbc->getRowOnce($dateGet);
+	if (isset($_POST['year']) && $_POST['year'] != "all") {
+		$searchYear = " AND DATE_FORMAT(works_regist_date, '%Y') = {$_POST['year']}";
+	} else {
+		$searchYear = "";
+	}
+	if (isset($_POST['date']) && $_POST['date'] === "DESC") {
+		$option = "works_regist_date DESC";
+	} else if (isset($_POST['date']) && $_POST['date'] === "ASC") {
+		$option = "works_regist_date ASC";
+	} else {
+		$option = "works_regist_date DESC";
+	}
+	$sql = "SELECT * FROM works WHERE works_open_flag = ?" . $searchYear . " ORDER BY " . $option;
 	$param = array(1);
 	$worksDigest = $dbc->getRow($sql, $param);
 	$countRows = count($worksDigest);

@@ -34,6 +34,28 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 			echo "<h2>{$worksPageTitle}</h2>\n";
 			if (! isset($_GET['works_id'])) {
 				echo "<p>{$countRows} 件見つかりました。</p>";
+				?>
+				<form method="POST" action="/works/">
+					<select name="date">
+						<option value="DESC"<?php if (isset($_POST['date']) && $_POST['date'] === "DESC") echo " selected"; ?>>更新日新しい順</option>
+						<option value="ASC"<?php if (isset($_POST['date']) && $_POST['date'] === "ASC") echo " selected"; ?>>更新日古い順</option>
+					</select>
+					<select name="year">
+						<?php if (isset($_POST['year'])) { $selYear = $_POST['year']; } else { $selYear = "all"; } ?>
+						<option value="all"<?php if (isset($_POST['year']) && $_POST['year'] === "all" || $selYear === "all") echo " selected"; ?>>全て</option>
+					<?php
+						foreach ($getYear as $year) {
+							echo "<option value=\"{$year["year"]}\"";
+							if ($selYear === $year['year']) {
+								echo " selected";
+							}
+							echo ">{$year["year"]}年</option>\n";
+						}
+					?>
+					</select>
+					<input type="submit" value="検索">
+				</form>
+				<?php
 				foreach($worksDigest as $row) {
 					echo '<article>'."\n".'<h3><a href="?works_id='.$row["works_id"].'">'.$row["works_title"]."</a></h3>\n";
 					if ($row["works_comment"] != "") {
