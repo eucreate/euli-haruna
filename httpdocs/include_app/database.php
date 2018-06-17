@@ -33,7 +33,7 @@ class dbc {
 				$this->cCon = new PDO("sqlite:{$this->cSqlitePath}{$this->cHostName}");
 			} else if ($this->cDbType === "MySQL") {
 				//MySQL
-				$this->cCon = new PDO("mysql:dbname=$this->cDatabase;host=$this->cHostName", $this->cUserName, $this->cPassword, array(PDO::ATTR_EMULATE_PREPARES=>false));
+				$this->cCon = new PDO("mysql:dbname=$this->cDatabase;host=$this->cHostName", $this->cUserName, $this->cPassword, array(PDO::ATTR_EMULATE_PREPARES=>false, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 			}
 		} catch(PDOException $e) { 
 			$this->isConnected = false;
