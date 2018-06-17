@@ -1,9 +1,9 @@
 <?php
 require_once(dirname(__FILE__) . "/../config.php");
-require_once(dirname(__FILE__) . "/../include_app/mysql.php");
-$mysql = new MySQL;
+require_once(dirname(__FILE__) . "/../include_app/database.php");
+$dbc = new dbc();
 require_once(dirname(__FILE__) . "/inc_qry_index.php");
-while($row = $mysql->fetch($works_player)) {
+foreach($works_player as $row) {
 	$filePath = $row["works_variation_url"];
 	$filePathInfo = pathinfo($filePath);
 	$worksVariationRegistDate = $row["works_variation_regist_date"];
@@ -24,7 +24,7 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 			<div id="works">
 			<?php
 			echo "<h2>{$worksPageTitle}</h2>\n";
-			while($row = $mysql->fetch($works)) {
+			foreach($works as $row) {
 				echo "<h3>".$worksVariationTitle;
 				if ($worksVariationRegistDate != "") {
 					echo " (".$worksVariationRegistDate."登録)</h3>\n";
@@ -39,7 +39,6 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 					$playerTitle = "Downroad";
 				}
 				echo "<h4>" . $playerTitle . "</h4>\n";
-//				while($row3 = $mysql->fetch($rows_player)) {
 					if ($filePathInfo["extension"] == "mp3") {
 ?>
 <script>
@@ -96,12 +95,11 @@ jQuery(function($){
     </div>
   </div>
 				<?php
-//					}
 					$size = filesize(SERVER_PATH.$filePath);
 					echo "<p><a href=\"" . $worksVariationUrl . "\" target=\"_blank\" class=\"download\">Download</a>&nbsp;(" . round($size / 1048576, 2) . "MB)</p>\n";
 				}
 			}
-			mysql_disconnect($mysql);
+			$dbc->Disconnect();
 			?>
 			<!-- /works --></div>
 			<!-- /main --></div>

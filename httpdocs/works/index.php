@@ -1,13 +1,13 @@
 <?php
 require_once(dirname(__FILE__) . "/../config.php");
-require_once(dirname(__FILE__) . "/../include_app/mysql.php");
-$mysql = new MySQL;
+require_once(dirname(__FILE__) . "/../include_app/database.php");
+$dbc = new dbc();
 require_once(dirname(__FILE__) . "/inc_qry_index.php");
 $worksPageTitle = "Works";
 if (! isset($_GET['works_id'])) {
 $page_title = "Works";
 } else {
-	while ($row = $mysql->fetch($works)) {
+	foreach ($works as $row) {
 		$page_title = $row["works_title"] . " - " . "Works";
 	}
 }
@@ -21,7 +21,7 @@ $customHead = $customHead . "<script src=\"/js/jquery.biggerlink.min.js\" type=\
 </script>
 ";
 } else {
-	while ($row = $mysql->fetch($works)) {
+	foreach ($works as $row) {
 		$customHead = $customHead . "<meta property=\"og:title\" content=\"" . $row["works_title"] . " - " . $page_title. " - " . $site_name . "\">\n";
 	}
 }
@@ -34,7 +34,7 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 			echo "<h2>{$worksPageTitle}</h2>\n";
 			if (! isset($_GET['works_id'])) {
 				echo "<p>{$countRows} 件見つかりました。</p>";
-				while($row = $mysql->fetch($worksDigest)) {
+				foreach($worksDigest as $row) {
 					echo '<article>'."\n".'<h3><a href="?works_id='.$row["works_id"].'">'.$row["works_title"]."</a></h3>\n";
 					if ($row["works_comment"] != "") {
 						echo "<p>".$row["works_comment"]."</p>\n";
@@ -42,26 +42,25 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 					echo "</article>\n";
 				}
 			} else {
-				$works = $mysql->query($sql);
-				while($row = $mysql->fetch($works)) {
+				foreach($works as $row) {
 					echo "<h3>".$row["works_title"]." (".$row["works_regist_date"]."登録)</h3>\n";
 					if ($row["works_comment"] != "") {
 						echo "<p>" . nl2br($row["works_comment"]) . "</p>\n";
 					}
 					// update
-					if ($rows > 0) {
+					if (count($works_update) > 0) {
 						echo "<h4>更新履歴</h4>\n";
 						echo "<ul id=\"update\">\n";
-						while($row2 = $mysql->fetch($works_update)) {
+						foreach($works_update as $row2) {
 							echo "<li>".$row2["works_update_up_date"]." ".$row2["works_update_comment"]."</li>\n";
 						}
 						echo "</ul>\n";
 					}
 					// variation
-					if ($rows_variation > 0) {
+					if (count($sql_variation) > 0) {
 						echo "<h4>バリエーション等</h4>\n";
 						echo "<ul id=\"variation\">\n";
-						while($row3 = $mysql->fetch($works_variation)) {
+						foreach($works_variation as $row3) {
 							if (substr($row3["works_variation_url"], 0, 4) == "http") {
 								$target = "blank";
 							} else {
@@ -81,7 +80,7 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 					}
 				}
 			}
-			mysql_disconnect($mysql);
+			$dbc->Disconnect();
 			?>
 			<!-- /works --></div>
 			<!-- /main --></div>
