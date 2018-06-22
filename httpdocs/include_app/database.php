@@ -33,7 +33,11 @@ class dbc {
 				$this->cCon = new PDO("sqlite:{$this->cSqlitePath}{$this->cHostName}");
 			} else if ($this->cDbType === "MySQL") {
 				//MySQL
-				$this->cCon = new PDO("mysql:dbname=$this->cDatabase;host=$this->cHostName", $this->cUserName, $this->cPassword, array(PDO::ATTR_EMULATE_PREPARES=>false, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
+				if (version_compare(PHP_VERSION. '5.3.6', '>=')) {
+					$this->cCon = new PDO("mysql:dbname=$this->cDatabase;host=$this->cHostName;charset=utf8", $this->cUserName, $this->cPassword, array(PDO::ATTR_EMULATE_PREPARES=>false));
+				} else {
+					$this->cCon = new PDO("mysql:dbname=$this->cDatabase;host=$this->cHostName", $this->cUserName, $this->cPassword, array(PDO::ATTR_EMULATE_PREPARES=>false, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
+				}
 			}
 		} catch(PDOException $e) { 
 			$this->isConnected = false;
@@ -54,10 +58,19 @@ class dbc {
 	//---------------------------
 	// 検索結果
 	//---------------------------
-	function getRow($query, $params=array()) {
+	function getRow($query, $params=array(), $type=array()) {
 		try {
 			$stmt = $this->cCon->prepare($query);
-			$stmt->execute($params);
+			if (count($type) > 0) {
+				for ($i = 0; $i < count($type); $i++) {
+					$j = $i + 1;
+					$paramType = $this->retParamType($type[$i]);
+					$stmt->bindValue($j, $params[$i], $paramType);
+				}
+				$stmt->execute();
+			} else {
+				$stmt->execute($params);
+			}
 			return $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			throw new Exception($e->getMessage());
@@ -89,20 +102,29 @@ class dbc {
 	//---------------------------
 	// INSERT, UPDATE, DELETE
 	//---------------------------
-	public function insertRow($query, $params){
+	public function insertRow($query, $params, $type=array()){
 		try{
 			$stmt = $this->cCon->prepare($query);
-			$stmt->execute($params);
+			if (count($type) > 0) {
+				for ($i = 0; $i < count($type); $i++) {
+					$j = $i + 1;
+					$paramType = $this->retParamType($type[$i]);
+					$stmt->bindValue($j, $params[$i], $paramType);
+				}
+				$stmt->execute();
+			} else {
+				$stmt->execute($params);
+			}
 			return intval($this->cCon->lastInsertId());
 		}catch(PDOException $e){
 			throw new Exception($e->getMessage());
 		}
 	}
-	public function updateRow($query, $params){
-		return $this->insertRow($query, $params);
+	public function updateRow($query, $params, $type=array()){
+		return $this->insertRow($query, $params, $type=array());
 	}
-	public function deleteRow($query, $params){
-		return $this->insertRow($query, $params);
+	public function deleteRow($query, $params, $type=array()){
+		return $this->insertRow($query, $params, $type=array());
 	}
 	//---------------------------
 	// INSERT, UPDATE, DELETE(ONCE)
@@ -131,5 +153,23 @@ class dbc {
 	//---------------------------
 	function Disconnect() {
 		$this->cCon = null;
+	}
+	
+	//---------------------------
+	// bindのデータ型
+	//---------------------------
+	public function retParamType($type) {
+		switch ($type) {
+			case "PARAM_NULL":
+				$paramType = PDO::PARAM_NULL;
+				break;
+			case "PARAM_INT":
+				$paramType = PDO::PARAM_INT;
+				break;
+			case "PARAM_STR":
+				$paramType = PDO::PARAM_STR;
+				break;
+		}
+		return $paramType;
 	}
 }
