@@ -12,12 +12,8 @@ foreach($works_player as $row) {
 }
 $worksPageTitle = "Works";
 $page_title = $worksVariationTitle . " - " . "Works";
-$customHead = "<link rel=\"stylesheet\" href=\"/css/layout.css\" type=\"text/css\" media=\"screen,print\">\n";
-//if ($filePathInfo["extension"] == "mp3") {
-//$customHead .= "<link rel=\"stylesheet\" href=\"/js/jplayer/skin/blue.monday/jplayer.blue.monday.css\" type=\"text/css\">
-//<script type=\"text/javascript\" src=\"/js/jplayer/jquery.jplayer.min.js\"></script>\n";
-//}
-$customHead = $customHead . "<meta property=\"og:title\" content=\"" . $page_title. " - " . $site_name . "\">\n";
+$customHead = "<link rel=\"stylesheet\" href=\"/css/layout.css\" type=\"text/css\" media=\"screen,print\">
+<meta property=\"og:title\" content=\"" . $page_title. " - " . $site_name . "\">\n";
 include_once(dirname(__FILE__) . "/../include_files/header.php");
 ?>
 			<div id="main">
