@@ -35,6 +35,7 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 			if (! isset($_GET['works_id'])) {
 				echo "<p>{$countRows} 件見つかりました。</p>";
 				?>
+				<div id="searchForm">
 				<form method="POST" action="/works/">
 					<select name="date">
 						<option value="DESC"<?php if (isset($_POST['date']) && $_POST['date'] === "DESC") echo " selected"; ?>>更新日新しい順</option>
@@ -55,6 +56,7 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 					</select>
 					<input type="submit" value="検索">
 				</form>
+				</div>
 				<?php
 				foreach($worksDigest as $row) {
 					echo '<article>'."\n".'<h3><a href="?works_id='.$row["works_id"].'">'.$row["works_title"]."</a></h3>\n";

@@ -48,6 +48,9 @@
 }
 
 #works {}
+#works #searchForm {
+	margin-bottom: 20px;
+}
 #works article {
 	margin-bottom: 1em;
 	border: 1px solid #CCC;
