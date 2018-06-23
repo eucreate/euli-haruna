@@ -23,8 +23,9 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 			foreach($works as $row) {
 				echo "<h3>".$worksVariationTitle;
 				if ($worksVariationRegistDate != "") {
-					echo " (".$worksVariationRegistDate."登録)</h3>\n";
+					echo " (".$worksVariationRegistDate."登録)";
 				}
+				echo "</h3>\n";
 				if ($row["works_comment"] != "") {
 					echo "<p>" . nl2br($row["works_comment"]) . "</p>\n";
 				}
@@ -43,6 +44,8 @@ include_once(dirname(__FILE__) . "/../include_files/header.php");
 				<?php
 					$size = filesize(SERVER_PATH.$filePath);
 					echo "<p><a href=\"" . $worksVariationUrl . "\" target=\"_blank\" class=\"download\">Download</a>&nbsp;(" . round($size / 1048576, 2) . "MB)</p>\n";
+				} else {
+					echo "<p><a href=\"{$filePath}\" target=\"_blank\" class=\"download\">Download</a></p>\n";
 				}
 			}
 			$dbc->Disconnect();
