@@ -5,23 +5,18 @@
 	padding: 12px 10px;
 	background: #3B943B;
 	color: #FFF;
-	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	behavior: url(/include_app/PIE/PIE.htc);
 }
 #main h3 {
 	background: #A64242;
 	background: -webkit-linear-gradient(top, #C87575, #BC5656 50%, #A64242 50%, #873636); /* Chrome10+,Safari5.1+ */
 	background: linear-gradient(to bottom, #C87575, #BC5656 50%, #A64242 50%, #873636); /* W3C */
-	-pie-background: linear-gradient(top, #C87575, #BC5656 50%, #A64242 50%, #873636); /* W3C */
 	padding: 12px 10px;
 	color: #FFF;
-	-webkit-border-radius: 5px;
 	border-radius: 5px;
 	text-shadow: 1px 1px 2px #333;
-	-webkit-box-shadow: inset 0 0 50px rgba(0,0,0, 0.1);
+	box-shadow: inset 0 0 50px rgba(0,0,0, 0.1);
 	font-size: 93%;
-	behavior: url(/include_app/PIE/PIE.htc);
 }
 
 #profile .profileContents table {
@@ -55,8 +50,6 @@
 	margin-bottom: 1em;
 	border: 1px solid #CCC;
 	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	behavior: url(/include_app/PIE/PIE.htc);
 }
 #works article h3 {
 	margin: 0;
@@ -80,12 +73,10 @@
 	color: #FFF;
 	text-shadow: 1px 1px 2px #333;
 	position: relative;
-	-webkit-border-radius: 5px;
 	border-radius: 5px;
 	border-left: 1px solid #036;
 	border-top: 1px solid #036;
 	box-shadow: inset 1px 1px 4px #592424;
-	behavior: url(/include_app/PIE/PIE.htc);
 }
 #works h4:before {
 	content: ' ';
@@ -96,7 +87,7 @@
 	left: 14px;
 	bottom: -27px;
 	background: transparent;
-	border-color: #A64242 transparent transparent transparent ;
+	border-color: #A64242 transparent transparent transparent;
 	border-style: solid;
 	border-width: 15px;
 }
@@ -127,4 +118,28 @@
   position: absolute;
   top: 0;
   left: 0;
+}
+
+#link {
+	padding-bottom: 1rem;
+}
+#link #contents p:first-of-type {
+	-webkit-font-feature-settings: "palt" 1;
+	font-feature-settings: "palt" 1;
+}
+#link .notice {
+	font-weight: bold;
+	-webkit-font-feature-settings: "pkna" 1;
+	font-feature-settings: "pkna" 1;
+}
+#link .category_title {
+	padding: 6px;
+	background-color: #A64242;
+	color: #fff;
+	font-weight: bold;
+	text-align: center;
+}
+#link li span {
+	-webkit-font-feature-settings: "palt" 1;
+	font-feature-settings: "palt" 1;
 }
