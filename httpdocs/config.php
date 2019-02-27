@@ -5,6 +5,7 @@ define('dbServer', "localhost");
 define('dbUser', "Database user name");
 define('dbPass', "Database password");
 define('dbName', "Database name");
+define('bdCharset', "utf8");
 define('sqlitePath', ""); // Please enter the full path on the server when using sqlite.
 
 // サイト設定 (Site setting)

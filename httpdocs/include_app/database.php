@@ -17,14 +17,16 @@ class dbc {
 	public $cDatabase;
 	public $cSqlitePath;
 	public $cDbType;
+	public $cCharset;
 	public $cCon;
-	function __construct() {
+	function __construct($dbCharset = bdCharset) {
 		$this->cHostName = dbServer;
 		$this->cUserName = dbUser;
 		$this->cPassword = dbPass;
 		$this->cDatabase = dbName;
 		$this->cSqlitePath = sqlitePath;
 		$this->cDbType = dbType;
+		$this->cCharset = $dbCharset;
 		//データベースへ接続
 		try {
 			$this->isConnected = true;
@@ -34,9 +36,9 @@ class dbc {
 			} else if ($this->cDbType === "MySQL") {
 				//MySQL
 				if (version_compare(PHP_VERSION. '5.3.6', '>=')) {
-					$this->cCon = new PDO("mysql:dbname=$this->cDatabase;host=$this->cHostName;charset=utf8", $this->cUserName, $this->cPassword, array(PDO::ATTR_EMULATE_PREPARES=>false));
+					$this->cCon = new PDO("mysql:dbname=$this->cDatabase;host=$this->cHostName;charset=$this->cCharset", $this->cUserName, $this->cPassword, array(PDO::ATTR_EMULATE_PREPARES=>false));
 				} else {
-					$this->cCon = new PDO("mysql:dbname=$this->cDatabase;host=$this->cHostName", $this->cUserName, $this->cPassword, array(PDO::ATTR_EMULATE_PREPARES=>false, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
+					$this->cCon = new PDO("mysql:dbname=$this->cDatabase;host=$this->cHostName", $this->cUserName, $this->cPassword, array(PDO::ATTR_EMULATE_PREPARES=>false, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES $this->cCharset'));
 				}
 			}
 		} catch(PDOException $e) { 
