@@ -53,8 +53,8 @@ include_once(dirname(__FILE__) . "/include_files/header.php");
         <dl>
         <?php
           foreach ($resultBlog as $row) {
-            echo "        <dt>" . date("Y年m月d日 H:i", strtotime($row["post_date"])) . "</a></dd>\n";
-            echo "        <dd><a href=\"" . $row["guid"] . "\">" . $row["post_title"] . "</a></dd>\n";
+            echo "<dt>" . date("Y年m月d日 H:i", strtotime($row["post_date"])) . "</a></dt>\n";
+            echo "<dd><a href=\"" . $row["guid"] . "\">" . $row["post_title"] . "</a></dd>\n";
           }
           $blogDbc->Disconnect();
         ?>

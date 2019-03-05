@@ -19,7 +19,7 @@ class dbc {
 	public $cDbType;
 	public $cCharset;
 	public $cCon;
-	function __construct($dbCharset = bdCharset) {
+	function __construct($dbCharset = dbCharset) {
 		$this->cHostName = dbServer;
 		$this->cUserName = dbUser;
 		$this->cPassword = dbPass;
