@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width">
 <title><?php echo $page_title." - ".$site_name; ?></title>
 <link rel="stylesheet" href="/css/common.css" type="text/css" media="screen,print">
 <link rel="stylesheet" href="/css/common_mq.css" type="text/css">
@@ -11,7 +11,9 @@
 <script src="/js/jquery.meanmenu.min.js"></script>
 <script>
 jQuery(document).ready(function () {
-	jQuery('#menu nav').meanmenu();
+	jQuery('#menu nav').meanmenu({
+	    meanScreenWidth: "600",
+	});
 });
 </script>
 <?php
@@ -20,8 +22,8 @@ echo $customHead;
 <meta property="og:url" content="<?php echo (empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]; ?>">
 <meta property="og:type" content="website">
 <meta property="og:description" content="Please enter ogp description.">
+<meta property="og:image" content="https://www.xxx.xxx/images/ogp.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="Twitter account">
 </head>
 <body>
 <div id="container">
