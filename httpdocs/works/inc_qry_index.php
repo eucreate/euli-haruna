@@ -7,6 +7,7 @@ if (! isset($_GET['works_id'])) {
 	} else {
 		$searchYear = "";
 	}
+	$searchGenreName = (isset($_POST['genreName']) && $_POST['genreName'] !== "all") ? " AND genreName = '{$_POST['genreName']}'" : "";
 	if (isset($_POST['date']) && $_POST['date'] === "DESC") {
 		$option = "works_regist_date DESC";
 	} else if (isset($_POST['date']) && $_POST['date'] === "ASC") {
@@ -14,8 +15,10 @@ if (! isset($_GET['works_id'])) {
 	} else {
 		$option = "works_regist_date DESC";
 	}
-	$sql = "SELECT * FROM works WHERE works_open_flag = ?" . $searchYear . " ORDER BY " . $option;
-	$param = array(1);
+	$genreNameGetSql = "SELECT DISTINCT genreName FROM works_variation WHERE genreName IS NOT NULL";
+	$getGenreName = $dbc->getRowOnce($genreNameGetSql);
+	$sql = "SELECT * FROM works INNER JOIN works_variation ON works.works_id = works_variation.works_id WHERE works_open_flag = ? AND works_variation_open_flag = ?" . $searchYear . $searchGenreName . " ORDER BY " . $option;
+	$param = array(1, 1);
 	$worksDigest = $dbc->getRow($sql, $param);
 	$countRows = count($worksDigest);
 } else {
@@ -32,8 +35,8 @@ if (! isset($_GET['works_id'])) {
 	$works_variation = $dbc->getRow($sql_variation, $param);
 	// player
 	if (isset($_GET['works_variation_id']) && $_GET['works_variation_id'] > 0) {
-		$sql_player = "SELECT * FROM works_variation WHERE works_variation_id = ?";
-		$param = array($_GET["works_variation_id"]);
+		$sql_player = "SELECT * FROM works_variation WHERE works_variation_id = ? AND works_variation_open_flag = ?";
+		$param = array($_GET["works_variation_id"], 1);
 		$works_player = $dbc->getRow($sql_player, $param);
 	}
 }
