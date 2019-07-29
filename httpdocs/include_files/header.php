@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="<?php echo $lang; ?>">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
@@ -21,8 +21,13 @@ echo $customHead;
 ?>
 <meta property="og:url" content="<?php echo (empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]; ?>">
 <meta property="og:type" content="website">
-<meta property="og:description" content="Please enter ogp description.">
-<meta property="og:image" content="https://www.xxx.xxx/images/ogp.png">
+<?php
+$ogDescription = $lang === "en-us" ? "Please enter an English description of ogp." : "Please enter a description of ogp in Japanese.";
+echo "<meta property=\"og:description\" content=\"{$ogDescription}\">\n";
+if ($_SERVER["SCRIPT_NAME"] !== "/works/player.php") {
+  echo "<meta property=\"og:image\" content=\"https://www.xxx.xxx/images/ogp.png\">\n";
+}
+?>
 <meta name="twitter:card" content="summary">
 </head>
 <body>

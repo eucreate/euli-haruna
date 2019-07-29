@@ -9,7 +9,9 @@ define('dbCharset', "utf8");
 define('sqlitePath', ""); // Please enter the full path on the server when using sqlite.
 
 // サイト設定 (Site setting)
-$site_name = 'Enter the site name';
+$qst = explode("&", $_SERVER["QUERY_STRING"]);
+$lang = in_array("lang=en-us", $qst) ? "en-us" : "ja";
+$site_name = $lang === "en-us" ? "Please enter an English site name" : 'Please enter Japanese site name';
 
 if ($_SERVER['SERVER_NAME'] === "URL for test environment") {
 	define('SERVER_PATH','Full path of server');
