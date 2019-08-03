@@ -51,15 +51,16 @@ include_once(dirname(__FILE__) . "/include_files/header.php");
           } else {
             $wn_link_url = "/whatsnew/detail.php?wn_id=".$row["wn_id"];
           }
+          $dispDate = new DateTime($row["wn_disp_date"]);
           if ($lang === "en-us") {
-            echo "<dt>" . date('n/j/Y',  strtotime($row["wn_disp_date"])) . "</dt>\n";
+            echo "<dt>" . $dispDate->format('n/j/Y') . iconNew($dispDate) . "</dt>\n";
             if ($row["wn_title_en_us"] != "") {
               echo "<dd><a href=\"".$wn_link_url."&lang=en-us\" target=\"".$row["wn_target"]."\">".$row["wn_title_en_us"]."</a></dd>\n";
             } else {
               echo "<dd><a href=\"".$wn_link_url."\" target=\"".$row["wn_target"]."\">".$row["wn_title"]."</a></dd>\n";
             }
           } else {
-            echo "<dt>".$row["wn_disp_date"]."</dt>\n";
+            echo "<dt>" . $row["wn_disp_date"] . iconNew($dispDate) . "</dt>\n";
             echo "<dd><a href=\"".$wn_link_url."\" target=\"".$row["wn_target"]."\">".$row["wn_title"]."</a></dd>\n";
           }
         }
@@ -79,10 +80,11 @@ include_once(dirname(__FILE__) . "/include_files/header.php");
         <dl>
         <?php
           foreach ($resultBlog as $row) {
+            $dispDate = new DateTime($row["post_date"]);
             if ($lang === "en-us") {
-              echo "<dt>" . date("n/j/Y H:i", strtotime($row["post_date"])) . " (JST)</a></dt>\n";
+              echo "<dt>" . $dispDate->format("n/j/Y H:i") . " (JST)" . iconNew($dispDate) . "</a></dt>\n";
             } else {
-              echo "<dt>" . date("Y年m月d日 H:i", strtotime($row["post_date"])) . "</a></dt>\n";
+              echo "<dt>" . $dispDate->format("Y年m月d日 H:i") . iconNew($dispDate) .  "</a></dt>\n";
             }
             echo "<dd><a href=\"" . $row["guid"] . "\">" . $row["post_title"] . "</a></dd>\n";
           }

@@ -2,7 +2,6 @@
 require_once(dirname(__FILE__) . "/../config.php");
 require_once(dirname(__FILE__) . "/../include_app/database.php");
 $dbc = new dbc();
-require_once(dirname(__FILE__) . "/../include_app/inc_fnc_common.php");
 if (isset($_GET['works_variation_id']) && is_numeric($_GET['works_variation_id']) || isset($_GET['lang'])) {
 	if (isset($_GET['lang']) && $_GET['lang'] === $lang) {
 		$linkLang = "?lang={$lang}";

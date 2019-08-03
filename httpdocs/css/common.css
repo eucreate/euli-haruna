@@ -91,3 +91,9 @@ body {
 .textRight {
 	text-align: right;
 }
+
+#whatsnew .iconNew,
+#blog .iconNew {
+	margin-left: .5em;
+	color: red;
+}

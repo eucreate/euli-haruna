@@ -20,3 +20,6 @@ if ($_SERVER['SERVER_NAME'] === "URL for test environment") {
 } else {
 	define('SERVER_PATH','Full path of server');
 }
+
+// 関数ファイルの読み込み (Load function file)
+require_once(dirname(__FILE__) . "/include_app/inc_fnc_common.php");
